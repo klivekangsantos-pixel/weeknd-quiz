@@ -1,0 +1,142 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué canción de The Weeknd eres?</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* FIX PARA TEXTO EXTRA */
+body > *:not(.quiz-container) {
+    display: none !important;
+}
+:root{--bg-primary:#0a0a0a;--bg-secondary:#111111;--bg-card:#161616;--neon-red:#ff1744;--neon-red-dim:#cc1236;--neon-glow:rgba(255,23,68,0.4);--text-primary:#ffffff;--text-secondary:#a0a0a0;--text-muted:#666666;--border-color:#2a2a2a;--transition-smooth:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background-color:var(--bg-primary);color:var(--text-primary);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;overflow-x:hidden}
+.quiz-container{width:100%;max-width:600px;position:relative}
+.screen{display:none;animation:fadeIn 0.5s ease-out}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px var(--neon-glow)}50%{box-shadow:0 0 40px var(--neon-glow),0 0 60px var(--neon-glow)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.start-screen{text-align:center;padding:60px 30px;background:var(--bg-card);border-radius:24px;border:1px solid var(--border-color);position:relative;overflow:hidden}
+.start-screen::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,var(--neon-glow) 0%,transparent 50%);opacity:0.3;pointer-events:none}
+.logo{font-size:3rem;font-weight:700;letter-spacing:-2px;margin-bottom:8px;position:relative;z-index:1}
+.logo span{color:var(--neon-red);text-shadow:0 0 30px var(--neon-glow)}
+.tagline{font-size:1.1rem;color:var(--text-secondary);margin-bottom:40px;font-weight:300;position:relative;z-index:1}
+.description{color:var(--text-muted);font-size:0.95rem;line-height:1.7;margin-bottom:40px;max-width:400px;margin-left:auto;margin-right:auto;position:relative;z-index:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 40px;font-size:1rem;font-weight:600;font-family:inherit;border:none;border-radius:50px;cursor:pointer;transition:var(--transition-smooth);position:relative;z-index:1}
+.btn-primary{background:var(--neon-red);color:var(--text-primary);box-shadow:0 0 20px var(--neon-glow)}
+.btn-primary:hover{background:var(--neon-red-dim);transform:translateY(-2px);box-shadow:0 0 30px var(--neon-glow),0 10px 30px rgba(0,0,0,0.3)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{background:transparent;color:var(--text-primary);border:2px solid var(--border-color)}
+.btn-secondary:hover{border-color:var(--neon-red);color:var(--neon-red)}
+.btn-icon{padding:12px 24px;font-size:0.9rem}
+.quiz-screen{background:var(--bg-card);border-radius:24px;border:1px solid var(--border-color);padding:40px 30px}
+.progress-container{margin-bottom:30px}
+.progress-text{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:0.85rem;color:var(--text-secondary)}
+.progress-bar{height:4px;background:var(--bg-secondary);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--neon-red),#ff4081);border-radius:2px;transition:width 0.4s ease-out;box-shadow:0 0 10px var(--neon-glow)}
+.question-container{animation:slideIn 0.4s ease-out}
+.question-number{font-size:0.8rem;color:var(--neon-red);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;font-weight:500}
+.question-text{font-size:1.4rem;font-weight:600;line-height:1.4;margin-bottom:30px}
+.answers-container{display:flex;flex-direction:column;gap:12px}
+.answer-btn{width:100%;padding:18px 24px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;color:var(--text-primary);font-size:0.95rem;font-family:inherit;text-align:left;cursor:pointer;transition:var(--transition-smooth);position:relative;overflow:hidden}
+.answer-btn::before{content:'';position:absolute;left:0;top:0;height:100%;width:3px;background:var(--neon-red);transform:scaleY(0);transition:transform 0.3s ease}
+.answer-btn:hover{background:var(--bg-card);border-color:var(--neon-red);transform:translateX(5px)}
+.answer-btn:hover::before{transform:scaleY(1)}
+.answer-btn.selected{background:rgba(255,23,68,0.15);border-color:var(--neon-red)}
+.answer-btn.selected::before{transform:scaleY(1)}
+.result-screen{text-align:center}
+.result-card{background:var(--bg-card);border-radius:24px;border:1px solid var(--border-color);padding:50px 30px;position:relative;overflow:hidden}
+.result-card::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:150px;height:150px;background:radial-gradient(circle,var(--neon-glow) 0%,transparent 70%);opacity:0.5;pointer-events:none}
+.result-label{font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:3px;margin-bottom:20px;position:relative;z-index:1}
+.result-song{font-size:2.5rem;font-weight:700;color:var(--neon-red);text-shadow:0 0 30px var(--neon-glow);margin-bottom:24px;line-height:1.2;position:relative;z-index:1;animation:pulse 2s infinite}
+.result-description{font-size:1rem;color:var(--text-secondary);line-height:1.8;max-width:450px;margin:0 auto 40px;position:relative;z-index:1}
+.result-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;position:relative;z-index:1}
+.share-dropdown{position:relative;display:inline-block}
+.share-options{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:8px;margin-bottom:10px;min-width:150px;z-index:10}
+.share-options.show{display:block;animation:fadeIn 0.2s ease-out}
+.share-option{display:flex;align-items:center;gap:10px;padding:10px 16px;background:transparent;border:none;color:var(--text-primary);font-size:0.9rem;font-family:inherit;cursor:pointer;border-radius:8px;width:100%;transition:var(--transition-smooth)}
+.share-option:hover{background:var(--bg-card);color:var(--neon-red)}
+.icon{width:18px;height:18px;fill:currentColor}
+@media(max-width:480px){body{padding:15px}.start-screen{padding:40px 20px}.logo{font-size:2.2rem}.tagline{font-size:1rem}.description{font-size:0.9rem}.quiz-screen{padding:30px 20px}.question-text{font-size:1.2rem}.answer-btn{padding:15px 18px;font-size:0.9rem}.result-card{padding:40px 20px}.result-song{font-size:1.8rem}.result-description{font-size:0.95rem}.btn{padding:14px 30px;font-size:0.95rem}.result-actions{flex-direction:column}.result-actions .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="quiz-container">
+<div id="start-screen" class="screen active start-screen">
+<h1 class="logo">THE <span>WEEKND</span></h1>
+<p class="tagline">¿Qué canción eres?</p>
+<p class="description">Responde 6 preguntas para descubrir qué icónica canción de The Weeknd representa tu vibra, personalidad y forma de vivir.</p>
+<button id="start-btn" class="btn btn-primary"><span>Comenzar Quiz</span><svg class="icon" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg></button>
+</div>
+<div id="quiz-screen" class="screen quiz-screen">
+<div class="progress-container">
+<div class="progress-text"><span id="progress-label">Pregunta 1 de 6</span><span id="progress-percent">0%</span></div>
+<div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+</div>
+<div id="question-container" class="question-container">
+<p id="question-number" class="question-number">Pregunta 1</p>
+<h2 id="question-text" class="question-text"></h2>
+<div id="answers-container" class="answers-container"></div>
+</div>
+</div>
+<div id="result-screen" class="screen result-screen">
+<div class="result-card">
+<p class="result-label">Tu Canción Es</p>
+<h2 id="result-song" class="result-song"></h2>
+<p id="result-description" class="result-description"></p>
+<div class="result-actions">
+<button id="restart-btn" class="btn btn-primary"><svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg><span>Repetir Quiz</span></button>
+<div class="share-dropdown">
+<button id="share-btn" class="btn btn-secondary btn-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg><span>Compartir</span></button>
+<div id="share-options" class="share-options">
+<button class="share-option" data-platform="twitter"><svg class="icon" viewBox="0 0 24 24"><path d="M22.46 6c-.85.38-1.78.64-2.75.76 1-.6 1.76-1.55 2.12-2.68-.93.55-1.96.95-3.06 1.17-.88-.94-2.13-1.53-3.51-1.53-2.66 0-4.81 2.16-4.81 4.81 0 .38.04.75.13 1.1-4-.2-7.58-2.11-9.96-5.02-.42.72-.66 1.56-.66 2.46 0 1.68.85 3.16 2.14 4.02-.79-.02-1.53-.24-2.18-.6v.06c0 2.35 1.67 4.31 3.88 4.76-.4.1-.83.16-1.27.16-.31 0-.62-.03-.92-.08.63 1.96 2.45 3.39 4.61 3.43-1.69 1.32-3.83 2.1-6.15 2.1-.4 0-.8-.02-1.19-.07 2.19 1.4 4.78 2.22 7.57 2.22 9.07 0 14.02-7.52 14.02-14.02 0-.21 0-.42-.01-.63.96-.69 1.79-1.56 2.45-2.55z"/></svg>Twitter</button>
+<button class="share-option" data-platform="facebook"><svg class="icon" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z"/></svg>Facebook</button>
+<button class="share-option" data-platform="copy"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copiar Enlace</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+var quizData=[{question:"Es viernes por la noche. ¿Cuál es tu plan ideal?",answers:[{text:"Conducir por la ciudad con las ventanas abajo y la música a todo volumen",points:{blinding_lights:3,starboy:1}},{text:"Una cena tranquila, quizás poniéndome al día con un viejo amigo",points:{save_your_tears:2,call_out_my_name:2}},{text:"Algo salvaje — una fiesta en la azotea o un club underground",points:{the_hills:3,starboy:1}},{text:"¿Honestamente? Quedarme en casa, perdido en mis pensamientos y recuerdos",points:{call_out_my_name:3,save_your_tears:1}}]},{question:"¿Cómo manejas el desamor?",answers:[{text:"Sigo adelante y me enfoco en mejorar como persona",points:{blinding_lights:2,starboy:2}},{text:"Me permito sentirlo, llorar si lo necesito, y luego seguir adelante",points:{save_your_tears:3,call_out_my_name:1}},{text:"Me distraigo con el caos y nuevas experiencias",points:{the_hills:3,starboy:1}},{text:"Me aferro más tiempo del que debería, repitiendo cada momento",points:{call_out_my_name:3,save_your_tears:1}}]},{question:"¿Qué palabra resuena más contigo?",answers:[{text:"Libertad",points:{blinding_lights:3,starboy:1}},{text:"Resiliencia",points:{save_your_tears:3,blinding_lights:1}},{text:"Tentación",points:{the_hills:3,starboy:1}},{text:"Nostalgia",points:{call_out_my_name:3,save_your_tears:1}}]},{question:"Tus amigos te describirían como...",answers:[{text:"El alma de la fiesta — siempre trayendo la energía",points:{blinding_lights:2,starboy:2}},{text:"El sensible que da los mejores consejos",points:{save_your_tears:2,call_out_my_name:2}},{text:"Misterioso — nunca saben bien qué estás pensando",points:{the_hills:3,call_out_my_name:1}},{text:"Ambicioso y seguro, siempre persiguiendo la siguiente meta",points:{starboy:3,blinding_lights:1}}]},{question:"¿Cuál es tu relación con el pasado?",answers:[{text:"Aprendo de él pero no me quedo estancado",points:{blinding_lights:2,starboy:2}},{text:"He crecido mucho pero algunas cicatrices permanecen",points:{save_your_tears:3,call_out_my_name:1}},{text:"El pasado me hizo quien soy — lo bueno y lo malo",points:{the_hills:2,starboy:2}},{text:"Pienso en él más de lo que me gustaría admitir",points:{call_out_my_name:3,save_your_tears:1}}]},{question:"Elige una vibra para tu vida ahora mismo:",answers:[{text:"Luces de neón, velocidad y posibilidades infinitas",points:{blinding_lights:3,starboy:1}},{text:"Sanando, creciendo y encontrando paz",points:{save_your_tears:3,blinding_lights:1}},{text:"Noches oscuras, secretos y vivir al límite",points:{the_hills:3,call_out_my_name:1}},{text:"En la cima del mundo, imparable",points:{starboy:3,blinding_lights:1}}]}];
+var songResults={blinding_lights:{name:"Blinding Lights",description:"Eres de los que persiguen la adrenalina — las luces, la velocidad, la emoción de la noche. Vives para esos momentos eléctricos que te hacen sentir vivo. Nostálgico pero siempre avanzando, sabes que lo mejor aún está por venir."},save_your_tears:{name:"Save Your Tears",description:"Has pasado por mucho, pero has salido más fuerte. Sientes profundamente pero has aprendido a proteger tu corazón. Hay una fuerza silenciosa en cómo manejas tus emociones — dejando ir con gracia, incluso cuando duele."},the_hills:{name:"The Hills",description:"No le temes al lado oscuro de la vida. Hay una crudeza en ti, un filo que atrae a las personas incluso cuando saben que no deberían acercarse demasiado. Vives bajo tus propias reglas y no te disculpas por quien eres."},call_out_my_name:{name:"Call Out My Name",description:"Amas intensamente y sientes todo con profundidad. Cuando le das tu corazón a alguien, lo das todo. El dolor de la pérdida te golpea fuerte, pero eso es porque tu capacidad de amar es igual de profunda."},starboy:{name:"Starboy",description:"La confianza es tu moneda. Has trabajado duro para llegar donde estás y no tienes miedo de demostrarlo. El éxito te sigue porque lo exiges — has eliminado todo lo que no te servía para convertirte en quien eres hoy."}};
+var currentQuestion=0;
+var scores={blinding_lights:0,save_your_tears:0,the_hills:0,call_out_my_name:0,starboy:0};
+var startScreen=document.getElementById("start-screen");
+var quizScreen=document.getElementById("quiz-screen");
+var resultScreen=document.getElementById("result-screen");
+var startBtn=document.getElementById("start-btn");
+var restartBtn=document.getElementById("restart-btn");
+var shareBtn=document.getElementById("share-btn");
+var shareOptions=document.getElementById("share-options");
+var progressLabel=document.getElementById("progress-label");
+var progressPercent=document.getElementById("progress-percent");
+var progressFill=document.getElementById("progress-fill");
+var questionNumber=document.getElementById("question-number");
+var questionText=document.getElementById("question-text");
+var answersContainer=document.getElementById("answers-container");
+var resultSong=document.getElementById("result-song");
+var resultDescription=document.getElementById("result-description");
+function showScreen(e){document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active")});e.classList.add("active")}
+function updateProgress(){var p=(currentQuestion/quizData.length)*100;progressLabel.textContent="Pregunta "+(currentQuestion+1)+" de "+quizData.length;progressPercent.textContent=Math.round(p)+"%";progressFill.style.width=p+"%"}
+function displayQuestion(){var q=quizData[currentQuestion];questionNumber.textContent="Pregunta "+(currentQuestion+1);questionText.textContent=q.question;answersContainer.innerHTML="";q.answers.forEach(function(a,i){var b=document.createElement("button");b.className="answer-btn";b.textContent=a.text;b.addEventListener("click",function(){selectAnswer(i)});answersContainer.appendChild(b)});var c=document.getElementById("question-container");c.style.animation="none";c.offsetHeight;c.style.animation="slideIn 0.4s ease-out";updateProgress()}
+function selectAnswer(i){var q=quizData[currentQuestion];var a=q.answers[i];for(var s in a.points){scores[s]+=a.points[s]}var b=answersContainer.querySelectorAll(".answer-btn");b[i].classList.add("selected");setTimeout(function(){currentQuestion++;if(currentQuestion<quizData.length){displayQuestion()}else{showResults()}},300)}
+function showResults(){var m=0;var r="blinding_lights";for(var s in scores){if(scores[s]>m){m=scores[s];r=s}}var res=songResults[r];resultSong.textContent=res.name;resultDescription.textContent=res.description;progressFill.style.width="100%";progressPercent.textContent="100%";showScreen(resultScreen)}
+function resetQuiz(){currentQuestion=0;scores={blinding_lights:0,save_your_tears:0,the_hills:0,call_out_my_name:0,starboy:0};showScreen(startScreen)}
+function toggleShareOptions(){shareOptions.classList.toggle("show")}
+function handleShare(p){var n=resultSong.textContent;var t='¡Obtuve "'+n+'" en el quiz "¿Qué canción de The Weeknd eres?"! Haz el quiz para descubrir tu canción.';if(p==="twitter"){alert("Compartir en Twitter:\n\n"+t)}else if(p==="facebook"){alert("Compartir en Facebook:\n\n"+t)}else if(p==="copy"){if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){alert("¡Copiado al portapapeles!")}).catch(function(){alert("Copia este texto:\n\n"+t)})}else{alert("Copia este texto:\n\n"+t)}}shareOptions.classList.remove("show")}
+startBtn.addEventListener("click",function(){showScreen(quizScreen);displayQuestion()});
+restartBtn.addEventListener("click",resetQuiz);
+shareBtn.addEventListener("click",function(e){e.stopPropagation();toggleShareOptions()});
+document.querySelectorAll(".share-option").forEach(function(o){o.addEventListener("click",function(){handleShare(o.dataset.platform)})});
+document.addEventListener("click",function(e){if(!shareBtn.contains(e.target)&&!shareOptions.contains(e.target)){shareOptions.classList.remove("show")}});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){shareOptions.classList.remove("show")}});
+</script>
+</body>
+</html>
+```
